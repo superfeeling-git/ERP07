@@ -1,0 +1,134 @@
+﻿@model IList<ProductClassModel>
+@using System.Text;
+@{
+    Layout = null;
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>静态表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link href="~/LayUI/layuiAdmin/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/LayUI/layuiAdmin/layuiadmin/style/admin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-card layadmin-header">
+        <div class="layui-breadcrumb" lay-filter="breadcrumb">
+            <a lay-href="">主页</a>
+            <a><cite>组件</cite></a>
+            <a><cite>静态表格</cite></a>
+        </div>
+    </div>
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">默认风格</div>
+                    <div class="layui-card-body">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>分类ID</th>
+                                    <th>分类名称</th>
+                                    <th>分类描述</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.ClassID</td>
+                                        <td>
+                                            @{
+                                                StringBuilder stringBuilder = new StringBuilder("|");
+                                                for (int i = 0; i < item.Depth * 5; i++)
+                                                {
+                                                    stringBuilder.Append("-&nbsp;");
+                                                }
+                                                stringBuilder.Append(item.ClassName);
+                                            }
+                                            @Html.Raw(stringBuilder.ToString())
+                                        </td>
+                                        <td>@item.ClassIntro</td>
+                                        <td>
+                                            <a href="javascript:;" id="@item.ClassID" data-classid="@item.ClassID" class="layui-btn layui-btn-normal layui-btn-sm edit"><i class="layui-icon layui-icon-edit"></i> 编辑分类</a>
+                                            <a href="javascript:;" id="@item.ClassID" data-classid="@item.ClassID" class="layui-btn layui-btn-warm layui-btn-sm Delete">删除分类</a>
+                                            <a href="@Url.Action("MoveClass",new { id=item.ClassID })" class="layui-btn layui-btn-danger layui-btn-sm">移动分类</a>
+                                            <a href="javascript:;" class="layui-btn layui-btn-sm">添加子分类</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/LayUI/layuiAdmin/layuiadmin/layui/layui.js"></script>
+    <script>
+        $(function () {
+            $(".edit").click(function () {
+                layer.open({
+                    type: 2,
+                    area: ['700px', '450px'],
+                    fixed: false, //不固定
+                    maxmin: true,
+                    end: function () {
+                        console.log("层销毁");
+                    },
+                    content: '@Url.Action("Edit")/' + $(this).data("classid")
+                });
+            })
+        })
+
+
+        layui.config({
+            base: '/LayUI/layuiAdmin/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'form', 'laydate'], function () {
+            var layer = layui.layer;
+
+            $(".Delete").click(function () {
+                var obj = $(this);
+
+                layer.confirm('确认要删除吗?', { icon: 3, title: '删除分类' }, function (index) {
+                    $.ajax({
+                        url: "@Url.Action("Delete")",
+                        type: "get",
+                        dataType: "json",
+                        data: { id: obj.data("classid")},
+                        success: function (d) {
+                            layer.msg(d.message, {
+                                icon: d.code == 0 ? 1 :4,
+                                time: 2000
+                            }, function () {
+                                obj.parents("tr").remove();
+                            }); 
+                        }
+                    })
+
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            })
+        });
+    </script>
+</body>
+</html>

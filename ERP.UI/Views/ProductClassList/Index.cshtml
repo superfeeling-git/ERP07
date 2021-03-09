@@ -1,0 +1,9 @@
+﻿@model ERP.Model.ProductClassModel
+    @{ 
+        Object obj = null;
+        if (Convert.ToBoolean(ViewBag.disabled))
+        {
+            obj = new { disabled = true, size = 30 };
+        }
+    }
+@Html.DropDownListFor(m => m.ParentID, ViewBag.proclass as IEnumerable<SelectListItem>, "做为一级分类", obj)
