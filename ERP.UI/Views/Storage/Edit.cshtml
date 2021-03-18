@@ -1,0 +1,120 @@
+﻿@model StorageModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>表单组合</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link href="~/LayUI/layuiAdmin/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <style type="text/css">
+        .supplier .layui-form-label {
+            width: 84px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 20px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">仓库名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.StorageName, new { autocomplete = "off", @class = "layui-input" })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">仓库类型</label>
+            <div class="layui-input-block">
+                @Html.DropDownListFor(m => m.StorageTypeID, ViewData["typeLists"] as IEnumerable<SelectListItem>, "--请选择--")
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="StorageStatus" value="False" title="启用" @Html.Raw(Model.StorageStatus ? "" : "checked=\'checked\'")>
+                <input type="radio" name="StorageStatus" value="True" title="禁用" @Html.Raw(Model.StorageStatus ? "checked=\'checked\'" : "")>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所在地址</label>
+            <div class="layui-input-block">
+                <div class="layui-inline">
+                    <select id="Province" name="Province" lay-filter="Province"></select>
+                </div>
+                <div class="layui-inline">
+                    <select id="City" name="City" lay-filter="City"></select>
+                </div>
+                <div class="layui-inline">
+                    <select id="Area" name="Area"></select>
+                </div>
+            </div>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.Address, new { autocomplete = "off", @class = "layui-input" })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">库位设置</label>
+            <div class="layui-input-block">
+                @foreach (var item in ViewData["dictLists"] as IEnumerable<DictModel>)
+                {
+                    <input @Html.Raw(Model.StorageLocation == item.DictName ? "checked=\'checked\'" : "") type="radio" name="StorageLocation" value="@item.DictName" title="@item.DictName">
+                }
+            </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin layui-hide">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                    @Html.HiddenFor(m => m.StorageID)
+                    @Html.HiddenFor(m => m.StorageCode)
+                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/LayUI/layuiAdmin/layuiadmin/layui/layui.js"></script>
+    <script src="~/Scripts/PCASClass.js"></script>
+    <script>
+        layui.config({
+            base: '/LayUI/layuiAdmin/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'form', 'laydate', 'upload'], function () {
+            //var $ = layui.$
+            var admin = layui.admin
+                , element = layui.element
+                , layer = layui.layer
+                , laydate = layui.laydate
+                , form = layui.form
+                , upload = layui.upload;
+
+            form.render(null, 'component-form-group');
+
+
+            new PCAS("Province", "City", "Area", "@Model.Province", "@Model.City", "@Model.Area");
+            form.render();
+            form.on('select(Province)', function (data) {
+                console.log(data.elem); //得到select原始DOM对象
+                console.log(data.value); //得到被选中的值
+                console.log(data.othis); //得到美化后的DOM对象
+                new PCAS("Province", "City", "Area", data.value, "", "");
+                form.render();
+            });
+            form.on('select(City)', function (data) {
+                console.log(data.elem); //得到select原始DOM对象
+                console.log(data.value); //得到被选中的值
+                console.log(data.othis); //得到美化后的DOM对象
+                new PCAS("Province", "City", "Area", data.value, data.value, "");
+                form.render();
+            });
+
+            //form.on('submit()', function (data) {
+
+            //    console.log(1);
+
+            //});
+        });
+    </script>
+</body>
+</html>

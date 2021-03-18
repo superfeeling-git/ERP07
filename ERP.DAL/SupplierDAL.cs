@@ -70,7 +70,7 @@ namespace ERP.DAL
             param[14] = new SqlParameter("@AddTime", model.AddTime);
             try
             {
-                string sql = "UPDATE Supplier SET SupplierCode = @SupplierCode,SupplierLevel = @SupplierLevel,SupplierName = @SupplierName,Contact = @Contact,TEL = @TEL,Phone = @Phone,Status = @Status,PayType = @PayType,Province = @Province,City = @City,Area = @Area,Address = @Address,Photo = @Photo,AddTime = @AddTime WHERE SupplierID = @SupplierID";
+                string sql = "UPDATE Supplier SET SupplierLevel = @SupplierLevel,SupplierName = @SupplierName,Contact = @Contact,TEL = @TEL,Phone = @Phone,Status = @Status,PayType = @PayType,Province = @Province,City = @City,Area = @Area,Address = @Address,Photo = @Photo,AddTime = @AddTime WHERE SupplierID = @SupplierID";
                 SqlHelper.ExecuteNonQuery(sql, param);
                 return true;
             }
@@ -238,6 +238,28 @@ namespace ERP.DAL
                             )";
 
             return SqlHelper.ExecuteList<ProductClassModel>(sql, new SqlParameter("@SupplierID", id));
+        }
+
+        public bool UpdateStatus(int[] SupplierID, string status)
+        {
+            try
+            {
+                foreach (var item in SupplierID)
+                {
+                    SqlHelper.ExecuteNonQuery
+                        (
+                        "UPDATE Supplier SET status = @status WHERE SupplierID = @SupplierID",
+                        new SqlParameter("@SupplierID", item),
+                        new SqlParameter("@status", status)
+                        );
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
         }
         #endregion
     }

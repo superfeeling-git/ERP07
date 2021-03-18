@@ -151,10 +151,15 @@
                                                 <tr>
                                                     <td><a href="@item" target="_blank">查看图片</a></td>
                                                     <td>
-                                                        @{
+                                                        @if(File.Exists(Server.MapPath(item)))
+                                                        {
                                                             FileInfo file = new FileInfo(Server.MapPath(item));
+                                                            @Html.Raw(file.Length / 1024 + "K")
                                                         }
-                                                        @Html.Raw(file.Length / 1024)K
+                                                        else
+                                                        {
+                                                            @:无此文件
+                                                        }
                                                     </td>
                                                     <td>
                                                         已上传
@@ -365,14 +370,14 @@
                     data: $("form").serialize(),
                     success: function (d) {
                         if (d.code == 0) {
-                            layer.msg('添加供应商成功', {
+                            layer.msg(d.message, {
                                 icon: 1,
                                 time: 2000 //2秒关闭（如果不配置，默认是3秒）
                             }, function () {
                                 //1、给用户选择：跳回列表页面还是停留在当前页面
                                 //2、停留在当前页面
-                                //$("form")[0].reset();
-                                window.location.reload();
+                                    //$("form")[0].reset();
+                                    window.location = "@Url.Action("Index")";
                             });
                         }
                     }

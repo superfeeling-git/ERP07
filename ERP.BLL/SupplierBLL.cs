@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using ERP.Common;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Web;
 
 namespace ERP.BLL
 {
@@ -34,7 +36,10 @@ namespace ERP.BLL
         /// <returns></returns>
         public ReturnInfo BatchDelete(int[] idList)
         {
-            supplierDAL.BatchDelete(idList);
+            foreach (var item in idList)
+            {
+                supplierDAL.Delete(item);
+            }
             return new ReturnInfo { code = 0 };
         }
 
@@ -91,6 +96,27 @@ namespace ERP.BLL
         /// <returns></returns>
         public ReturnInfo Delete(int id)
         {
+            //删除中间表
+            supplier_ProductClassDAL.Delete(id);
+
+
+            //当前供应商的MODEL
+            string[] photos = supplierDAL.GetModelByID(id).Photo.Split(',');
+
+            //删除图片
+            foreach (var item in photos)
+            {
+                try
+                {
+                    File.Delete(HttpContext.Current.Server.MapPath(item));
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            //执行删除
             supplierDAL.Delete(id);
             return new ReturnInfo { code = 0 };
         }
@@ -193,18 +219,26 @@ namespace ERP.BLL
         public ReturnInfo Update(SupplierModel model)
         {
             //LastUpdateTime\\\CreateTime
+            //更新当前时间
             model.AddTime = DateTime.Now;
 
-            //中间表
-            int newid = supplierDAL.Create(model);
+            //删除中间表
+            supplier_ProductClassDAL.Delete(model.SupplierID);
 
             //批量插入中间表
             foreach (var item in model.ClassID)
             {
-                supplier_ProductClassDAL.Create(new Supplier_ProductClassModel { SupplierID = newid, ClassID = item });
+                supplier_ProductClassDAL.Create(new Supplier_ProductClassModel { SupplierID = model.SupplierID, ClassID = item });
             }
 
-            return new ReturnInfo { code = 0 };
+            //更新供应商
+            //supplierDAL.Update(model);
+            return new ReturnInfo { code = Convert.ToInt32(!supplierDAL.Update(model)), message = "更新供应商成功" };
+        }
+
+        public bool UpdateStatus(int[] SupplierID, string status)
+        {
+            return supplierDAL.UpdateStatus(SupplierID, status == "启用" ? "停用" : "启用");
         }
     }
 }

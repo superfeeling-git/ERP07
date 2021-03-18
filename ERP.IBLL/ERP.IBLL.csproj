@@ -45,6 +45,8 @@
     <Compile Include="IBaseBLL.cs" />
     <Compile Include="IDictBLL.cs" />
     <Compile Include="IProductClassBLL.cs" />
+    <Compile Include="IStorageBLL.cs" />
+    <Compile Include="IStorageTypeBLL.cs" />
     <Compile Include="ISupplierBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

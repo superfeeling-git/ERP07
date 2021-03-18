@@ -64,7 +64,7 @@ namespace ERP.IBLL
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        Tuple<IList<SupplierModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10)
+        Tuple<IList<TModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10)
             where SearchModel : class, new();
     }
 }

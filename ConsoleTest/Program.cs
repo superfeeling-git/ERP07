@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using ERP.Model;
 
 namespace ConsoleTest
@@ -11,30 +12,34 @@ namespace ConsoleTest
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine(GeneratorCode("KL","A999"));
-
-            Tuple<List<AdminModel>, int> tuple = new Tuple<List<AdminModel>, int>(
-                new List<AdminModel> 
-                {
-                    new AdminModel{ AdminID = 1, UserName = Guid.NewGuid().ToString() },
-                    new AdminModel{ AdminID = 2, UserName = Guid.NewGuid().ToString()
-                }
-            }, 100
-            );
-
-            //输出列表数据
-            Console.WriteLine("-----列表-------");
-            foreach (var item in tuple.Item1)
+            try
             {
-                Console.WriteLine(item.UserName);
+                for (int i = 0; i < 5; i++)
+                {
+                    if (i == 3)
+                    {
+                        Console.WriteLine("服务器超时，要有对应的捕获机制");
+                        throw new Exception("出错了");                        
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                ReTry();
+            }
+            finally
+            {
 
-            Console.WriteLine("-----总记录数-------");
-            Console.WriteLine(tuple.Item2);
-
+            }
 
             Console.ReadLine();
         }
 
+        static void ReTry()
+        {
+            Console.WriteLine("模拟重试5秒钟");
+            Thread.Sleep(new TimeSpan(0, 0, 5));
+            Console.WriteLine("重试成功");
+        }
     }
 }

@@ -91,7 +91,7 @@
         where: field
       });
     });
-  
+
     //事件
     var active = {
       batchdel: function(){
@@ -152,8 +152,8 @@
     };
     
     $('.layui-btn.layuiadmin-btn-useradmin').on('click', function(){
-      var type = $(this).data('type');
-      active[type] ? active[type].call(this) : '';
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
     });
   });
   </script>

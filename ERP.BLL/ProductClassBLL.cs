@@ -150,7 +150,7 @@ namespace ERP.BLL
             return new ReturnInfo { code = 0, message = "移动分类成功" };
         }
 
-        public Tuple<IList<SupplierModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10) where SearchModel : class, new()
+        Tuple<IList<ProductClassModel>, int> IBaseBLL<ProductClassModel>.GetPage<SearchModel>(string order, SearchModel where, int pageIndex, int pageSize)
         {
             throw new NotImplementedException();
         }

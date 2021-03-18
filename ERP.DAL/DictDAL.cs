@@ -152,7 +152,7 @@ namespace ERP.DAL
         /// <returns>Dict List</returns>
         public IList<DictModel> GetAll()
         {
-            return SqlHelper.ExecuteList<DictModel>("SELECT * FROM Dict ORDER BY DictID");
+            return SqlHelper.ExecuteList<DictModel>("SELECT * FROM Dict ORDER BY DictOrder");
         }
 
         /// <summary>

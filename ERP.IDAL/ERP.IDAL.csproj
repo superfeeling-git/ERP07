@@ -45,6 +45,8 @@
     <Compile Include="IBaseDAL.cs" />
     <Compile Include="IDictDAL.cs" />
     <Compile Include="IProductClassDAL.cs" />
+    <Compile Include="IStorageDAL.cs" />
+    <Compile Include="IStorageTypeDAL.cs" />
     <Compile Include="ISupplierDAL.cs" />
     <Compile Include="ISupplier_ProductClassDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

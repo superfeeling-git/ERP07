@@ -9,6 +9,10 @@ namespace ERP.IDAL
 {
     public interface ISupplierDAL<TModel> : IBaseDAL<TModel>
     {
+        /// <summary>
+        /// 获取最大编号
+        /// </summary>
+        /// <returns></returns>
         object GetMaxCode();
         new int Create(TModel model);
         /// <summary>
@@ -17,5 +21,11 @@ namespace ERP.IDAL
         /// <param name="id"></param>
         /// <returns></returns>
         IList<ProductClassModel> GetBrandBySupplierID(int id);
+        /// <summary>
+        /// 更新供应商状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool UpdateStatus(int[] SupplierID, string status);
     }
 }

@@ -47,6 +47,8 @@
     <Compile Include="ProductClassModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnInfo.cs" />
+    <Compile Include="StorageModel.cs" />
+    <Compile Include="StorageTypeModel.cs" />
     <Compile Include="SupplierModel.cs" />
     <Compile Include="Supplier_ProductClassModel.cs" />
   </ItemGroup>

@@ -7,6 +7,7 @@ using ERP.IBLL;
 using ERP.Model;
 using System.IO;
 using ERP.Common;
+using System.Web.Security;
 
 namespace ERP.UI.Controllers
 {
@@ -49,6 +50,21 @@ namespace ERP.UI.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            if(User.Identity.IsAuthenticated)
+            { 
+                //MemberShip
+                string username = User.Identity.Name;
+
+                string AuthenticationType = User.Identity.AuthenticationType;
+
+                bool isLogin = User.Identity.IsAuthenticated;
+
+                FormsIdentity formsIdentity = (FormsIdentity)User.Identity;
+
+                string userData = formsIdentity.Ticket.UserData;
+
+                Response.Write(userData);
+            }
             ViewBag.dict = dictBLL.GetAll();
             ViewBag.proclass = productClassBLL.GetAll();
             return View();
@@ -82,12 +98,21 @@ namespace ERP.UI.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public ActionResult Edit(SupplierModel supplierModel)
         {
             return Json(supplierBLL.Update(supplierModel), JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Delete(int[] SupplierID)
+        {
+            return Json(supplierBLL.BatchDelete(SupplierID), JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 
@@ -161,6 +186,16 @@ namespace ERP.UI.Controllers
             }
 
             return Json(new { code = 1 }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateStatus(int[] SupplierID, string status)
+        {
+            return Json(supplierBLL.UpdateStatus(SupplierID, status), JsonRequestBehavior.AllowGet);
         }
 
 

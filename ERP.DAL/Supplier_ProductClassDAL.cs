@@ -67,7 +67,7 @@ namespace ERP.DAL
         }
 
         /// <summary>
-        /// Delete Supplier_ProductClass By ID
+        /// 按供应商ID删除
         /// </summary>
         /// <param name="id">Supplier_ProductClass ID</param>
         /// <returns>True or False</returns>
@@ -77,7 +77,7 @@ namespace ERP.DAL
             param[0] = new SqlParameter("@ID", id);
             try
             {
-                string sql = "DELETE FROM Supplier_ProductClass WHERE ID = @ID";
+                string sql = "DELETE FROM Supplier_ProductClass WHERE SupplierID = @ID";
                 SqlHelper.ExecuteNonQuery(sql, param);
                 return true;
             }

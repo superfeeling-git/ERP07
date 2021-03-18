@@ -9,6 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link href="~/LayUI/layuiAdmin/layuiadmin/layui/css/layui.css" rel="stylesheet" />
     <link href="~/LayUI/layuiAdmin/layuiadmin/style/admin.css" rel="stylesheet" />
+    <style type="text/css">
+        .layui-form-item .layui-input-inline{width:159px;}
+    </style>
 </head>
 <body>
 
@@ -57,54 +60,63 @@
                 </form>
             </div>
 
-            <div class="layui-card-body">
-                <table class="layui-table layui-form">
-                    <colgroup>
-                        <col width="60">
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>选择</th>
-                            <th>ID</th>
-                            <th>供应商编号</th>
-                            <th>供应商名称</th>
-                            <th>供应商等级</th>
-                            <th>联系人</th>
-                            <th>手机号</th>
-                            <th>供应商状态</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Item1)
-                        {
+            <form class="layui-form" id="list">
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="60">
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
+                        <thead>
                             <tr>
-                                <td align="center"><input type="checkbox" name="like[write]" lay-skin="primary"></td>
-                                <td>@item.SupplierID</td>
-                                <td><a href="@Url.Action("Edit",new { id = item.SupplierID })">@item.SupplierCode</a></td>
-                                <td>@item.SupplierName</td>
-                                <td>@item.SupplierLevel</td>
-                                <td>@item.Contact</td>
-                                <td>@item.Phone</td>
-                                <td>@item.Status</td>
-                                <td>
-                                    <a href="javascript:;" id="@item.SupplierID" data-classid="@item.SupplierID" class="layui-btn layui-btn-normal layui-btn-sm edit"><i class="layui-icon layui-icon-edit"></i> 禁用</a>
-                                    <a href="javascript:;" id="@item.SupplierID" data-classid="@item.SupplierID" class="layui-btn layui-btn-danger layui-btn-sm Delete"><i class="layui-icon layui-icon-delete"></i> 删除</a>
-                                </td>
+                                <th>选择</th>
+                                <th>ID</th>
+                                <th>供应商编号</th>
+                                <th>供应商名称</th>
+                                <th>供应商等级</th>
+                                <th>联系人</th>
+                                <th>手机号</th>
+                                <th>供应商状态</th>
+                                <th>操作</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Item1)
+                            {
+                                <tr>
+                                    <td align="center"><input type="checkbox" name="SupplierID" value="@item.SupplierID" lay-skin="primary"></td>
+                                    <td>@item.SupplierID</td>
+                                    <td><a href="@Url.Action("Edit",new { id = item.SupplierID })">@item.SupplierCode</a></td>
+                                    <td>@item.SupplierName</td>
+                                    <td>@item.SupplierLevel</td>
+                                    <td>@item.Contact</td>
+                                    <td>@item.Phone</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        <a href="javascript:;" id="@item.SupplierID" data-status="@item.Status" class="layui-btn layui-btn-normal layui-btn-sm edit status"><i class="layui-icon layui-icon-edit"></i>@Html.Raw(item.Status == "启用" ? "停用" : "启用")</a>
+                                        <a href="javascript:;" id="@item.SupplierID" class="layui-btn layui-btn-danger layui-btn-sm Delete delete"><i class="layui-icon layui-icon-delete"></i> 删除</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
 
-                <div id="page"></div>
-            </div>
+                    <div>
+                        <button type="button" class="layui-btn layui-btn-sm selectAll">全选</button>
+                        <button lay-submit="" lay-filter="component-form-demo1" class="layui-btn layui-btn-normal layui-btn-sm BatchDelete">批量删除</button>
+                        <button lay-submit="" lay-filter="component-form-demo2" class="layui-btn layui-btn-warm layui-btn-sm">批量停用</button>
+                        <button lay-submit="" lay-filter="component-form-demo3" class="layui-btn layui-btn-danger layui-btn-sm">批量启用</button>
+                    </div>
+                    <input type="hidden" name="status" id="status" />
+                    <div id="page"></div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -116,9 +128,10 @@
             base: '/LayUI/layuiAdmin/layuiadmin/' //静态资源所在路径
         }).extend({
             index: 'lib/index' //主入口模块
-        }).use(['form', 'index', 'contlist', 'table', 'laypage'], function () {
+        }).use(['form', 'index', 'contlist', 'table', 'laypage', 'layer'], function () {
             var form = layui.form;
             var laypage = layui.laypage;
+            var layer = layui.layer;
 
             var count = @Model.Item2;
             var pagesize = 10;
@@ -135,6 +148,130 @@
                     }
                 }
             });
+
+            //禁用、启用
+            $(".status").click(function () {
+                var id = $(this).prop("id");
+                var status = $(this).data("status");
+                var td = $(this).parent().prev();
+                var btn = $(this);
+
+                layer.confirm('确认要' + btn.text() + '吗?', { icon: 3, title: '启用/禁用供应商' }, function (index) {
+                    $.ajax({
+                    url: "@Url.Action("UpdateStatus")",
+                    type: "post",
+                    dataType: "json",
+                    data: { SupplierID: id, status: status},
+                    success: function (d) {
+                        if (d) {
+                            td.text(status == "启用" ? "停用" : "启用");
+                            btn.html('<i class="layui-icon layui-icon-edit"></i>' + status);
+                        }
+                    }
+                    })
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            })
+
+            //删除
+            $(".delete").click(function () {
+                var id = $(this).prop("id");
+                var tr = $(this).parents("tr");
+
+                layer.confirm('确认要删除吗?', { icon: 3, title: '删除供应商' }, function (index) {
+                    $.ajax({
+                    url: "@Url.Action("Delete")",
+                    type: "post",
+                    dataType: "json",
+                    data: { SupplierID: id},
+                    success: function (d) {
+                        if (d) {
+                            layer.msg("删除成功", {
+                                icon: 1,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                tr.remove();
+                            });
+                        }
+                    }
+                    })
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            })
+
+            //全选
+            $(".selectAll").click(function () {
+                $("[name=SupplierID]").prop("checked", true);
+                form.render();
+            })
+
+            //批量删除
+            form.on('submit(component-form-demo1)', function (data) {
+
+                layer.confirm('确认要批量删除吗?', { icon: 3, title: '删除供应商' }, function (index) {
+                    $.ajax({
+                        url: "@Url.Action("Delete")",
+                        type: "post",
+                        dataType: "json",
+                        data: $("form#list").serialize(),
+                        success: function (d) {
+                            layer.msg("删除成功", {
+                                icon: 1,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                    window.location.reload();
+                            });
+                        }
+                    })
+
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+
+
+                return false;
+            });
+
+            //批量停用
+            form.on('submit(component-form-demo2)', function (data) {
+                UpdateStatus("停用");
+                return false;
+            });
+
+            //批量启用
+            form.on('submit(component-form-demo3)', function (data) {
+                UpdateStatus("启用");
+                return false;
+            });
+
+            function UpdateStatus(status) {
+                layer.confirm('确认要批量' + status + '吗?', { icon: 3, title: status +'供应商' }, function (index) {
+                    $("#status").val(status == "启用" ? "停用" : "启用");
+                    $.ajax({
+                        url: "@Url.Action("UpdateStatus")",
+                        type: "post",
+                        dataType: "json",
+                        data: $("form#list").serialize(),
+                        success: function (d) {
+                            layer.msg("批量" + status + "成功", {
+                                icon: 1,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                    //window.location.reload();
+                            });
+                        }
+                    })
+
+                    layer.close(index);
+                }, function (index) {
+                    layer.close(index);
+                });
+            }
         });
     </script>
 </body>

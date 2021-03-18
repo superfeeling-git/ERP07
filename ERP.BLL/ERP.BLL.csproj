@@ -47,6 +47,8 @@
     <Compile Include="DictBLL.cs" />
     <Compile Include="ProductClassBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageBLL.cs" />
+    <Compile Include="StorageTypeBLL.cs" />
     <Compile Include="SupplierBLL.cs" />
   </ItemGroup>
   <ItemGroup>

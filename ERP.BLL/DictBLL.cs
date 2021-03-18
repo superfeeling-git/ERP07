@@ -104,7 +104,7 @@ namespace ERP.BLL
             throw new NotImplementedException();
         }
 
-        public Tuple<IList<SupplierModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10) where SearchModel : class, new()
+        public Tuple<IList<DictModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10) where SearchModel : class, new()
         {
             throw new NotImplementedException();
         }

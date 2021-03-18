@@ -17,6 +17,21 @@ namespace ERP.Common
     {
         private static string ConnStr = ConfigurationManager.ConnectionStrings["DbContext"].ConnectionString;
 
+        /// <summary>
+        /// 预处理SQL参数
+        /// </summary>
+        /// <param name="sqlParms"></param>
+        private static void PreProcess(SqlParameter[] sqlParms)
+        {
+            foreach (var item in sqlParms)
+            {
+                if(item.Value == null)
+                {
+                    item.Value = DBNull.Value;
+                }
+            }
+        }
+
         public static int ExecuteNonQuery(string sql, CommandType commandType = CommandType.Text, params SqlParameter[] sqlParameters)
         {
             using (SqlConnection conn = new SqlConnection(ConnStr))
@@ -27,6 +42,8 @@ namespace ERP.Common
 
                 if(sqlParameters!=null)
                 {
+                    PreProcess(sqlParameters);
+
                     cmd.Parameters.AddRange(sqlParameters);
                 }
 
@@ -51,6 +68,8 @@ namespace ERP.Common
 
                 if (sqlParameters != null)
                 {
+                    PreProcess(sqlParameters);
+
                     cmd.Parameters.AddRange(sqlParameters);
                 }
 
@@ -91,6 +110,8 @@ namespace ERP.Common
 
                 if (sqlParameters != null)
                 {
+                    PreProcess(sqlParameters);
+
                     cmd.Parameters.AddRange(sqlParameters);
                 }
 

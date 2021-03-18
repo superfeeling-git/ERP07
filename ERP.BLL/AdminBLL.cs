@@ -56,11 +56,6 @@ namespace ERP.BLL
             throw new NotImplementedException();
         }
 
-        public Tuple<IList<SupplierModel>, int> GetPage<SearchModel>(string order, SearchModel where = null, int pageIndex = 1, int pageSize = 10) where SearchModel : class, new()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// 登录
         /// </summary>
@@ -81,7 +76,7 @@ namespace ERP.BLL
                 {
                     if(adminModel.Password.MD5Encrypt() == Admin.Password)
                     {
-                        FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, adminModel.UserName, DateTime.Now, DateTime.Now.AddHours(1), true, "");
+                        FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, adminModel.UserName, DateTime.Now, DateTime.Now.AddHours(1), true, "afas,df,as,dfasdf");
 
                         string FormData = FormsAuthentication.Encrypt(ticket);
 
@@ -109,6 +104,11 @@ namespace ERP.BLL
         }
 
         public ReturnInfo Update(AdminModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        Tuple<IList<AdminModel>, int> IBaseBLL<AdminModel>.GetPage<SearchModel>(string order, SearchModel where, int pageIndex, int pageSize)
         {
             throw new NotImplementedException();
         }
